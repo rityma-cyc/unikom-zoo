@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kebun Binatang Unikom</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+  <!-- Header -->
+  <header>
+  <div class="navbar">
+    <h1>Kebun Binatang Unikom</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="menu">
+      <a href="#">Beranda</a>
+      <a href="#">Tentang Kami</a>
+      <a href="#">Satwa</a>
+      <a href="#">Tiket</a>
+      <a href="#">Event</a>
+      <a href="#">Kontak</a>
+    </nav>
+  </div>
+</header>
+
+  <!-- Beranda -->
+  <section id="beranda">
+    <h2>Selamat Datang di Kebun Binatang Unikom</h2>
+    <p>Tempat wisata edukasi keluarga dengan lebih dari 200 jenis satwa dari seluruh dunia.</p>
+    <img src="images/zoo-banner.jpeg" alt="Kebun Binatang" width="100%">
+  </section>
+
+  <!-- Tentang Kami -->
+  <section id="tentang">
+    <h2>Tentang Kami</h2>
+    <p>Kebun Binatang Unikom berdiri sejak tahun 1980 dengan tujuan melestarikan satwa dan memberikan edukasi kepada masyarakat.</p>
+  </section>
+
+  <!-- Satwa -->
+  <section id="satwa">
+    <h2>Satwa Koleksi Kami</h2>
+    <div class="satwa-grid">
+      <div class="satwa-item">
+        <img src="images/gajah.jpeg" alt="Gajah">
+        <h3>Gajah Sumatera</h3>
+        <p>Satwa khas Indonesia yang dilindungi.</p>
+      </div>
+      <div class="satwa-item">
+        <img src="images/singa.jpeg" alt="Singa">
+        <h3>Singa Afrika</h3>
+        <p>Si Raja Hutan dari Afrika.</p>
+      </div>
+      <div class="satwa-item">
+        <img src="images/panda.jpeg" alt="Panda">
+        <h3>Panda Raksasa</h3>
+        <p>Hewan lucu dari Tiongkok yang gemar bambu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tiket -->
+  <section id="tiket">
+    <h2>Harga Tiket</h2>
+    <ul>
+      <li>Dewasa: Rp 50.000</li>
+      <li>Anak-anak: Rp 30.000</li>
+      <li>Rombongan (min 20 orang): Rp 25.000/orang</li>
+    </ul>
+  </section>
+
+  <!-- Event -->
+  <section id="event">
+    <h2>Jadwal Event & Atraksi</h2>
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Event</th>
+        <th>Jam</th>
+        <th>Lokasi</th>
+      </tr>
+      <tr>
+        <td>Pertunjukan Singa Laut</td>
+        <td>11.00</td>
+        <td>Panggung Satwa</td>
+      </tr>
+      <tr>
+        <td>Feeding Gajah</td>
+        <td>14.00</td>
+        <td>Zona Asia</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- Kontak -->
+  <section id="kontak">
+    <h2>Kontak & Lokasi</h2>
+    <p>📍 Jalan Raya Safari No. 1, Jakarta</p>
+    <p>☎️ Telp: (021) 123456</p>
+    <p>📧 Email: info@zooUnikom.com</p>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!..." 
+            width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Kebun Binatang Unikom. Semua Hak Dilindungi.</p>
+  </footer>
+</body>
+</html>
