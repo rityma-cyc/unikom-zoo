@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beli Tiket – Kebun Binatang Unikom</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .container{max-width:900px;margin:40px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid .full{grid-column:1/-1}
+    label{font-weight:600;margin-bottom:6px;display:block}
+    input,select{width:100%;padding:12px;border:1px solid #cfd8dc;border-radius:10px}
+    .card{background:#f7fbf9;border:1px solid #e3efe9;border-radius:14px;padding:16px}
+    .total{font-size:28px;font-weight:800}
+    .btn{background:#2f6f52;color:#fff;border:none;padding:14px 18px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .muted{color:#607d8b}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Beli Tiket</h1>
+    <p class="muted">Isi data di bawah ini untuk membeli tiket kunjungan.</p>
+
+    <form id="formTiket" class="grid" novalidate>
+      <div>
+        <label>Nama Lengkap</label>
+        <input type="text" id="nama" required />
+      </div>
+
+      <div>
+        <label>Email</label>
+        <input type="email" id="email" required />
+      </div>
+
+      <div>
+        <label>Tanggal Kunjungan</label>
+        <input type="date" id="tanggal" required />
+      </div>
+
+      <div>
+        <label>Jenis Tiket</label>
+        <select id="jenis">
+          <option value="dewasa" data-harga="50000">Dewasa – Rp50.000</option>
+          <option value="anak" data-harga="30000">Anak (≤12th) – Rp30.000</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Jumlah Tiket</label>
+        <input type="number" id="jumlah" value="1" min="1" max="10" />
+      </div>
+
+      <div class="card">
+        <div class="muted">Ringkasan</div>
+        <div>Harga Satuan: <b id="hargaSatuan">Rp50.000</b></div>
+        <div>Pajak (10%): <b id="pajak">Rp5.000</b></div>
+        <div class="total">Total: <span id="total">Rp55.000</span></div>
+      </div>
+
+      <div class="full">
+        <button class="btn" id="btnBayar" type="submit">Lanjut ke Pembayaran</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const elJenis = document.getElementById('jenis');
+    const elJumlah = document.getElementById('jumlah');
+    const elHargaSatuan = document.getElementById('hargaSatuan');
+    const elPajak = document.getElementById('pajak');
+    const elTotal = document.getElementById('total');
+
+    const formatRupiah = n =>
+      new Intl.NumberFormat('id-ID', { style:'currency', currency:'IDR', maximumFractionDigits:0 }).format(n);
+
+    function hitung() {
+      const harga = +elJenis.selectedOptions[0].dataset.harga;
+      const qty = Math.max(1, +elJumlah.value || 1);
+      const subtotal = harga * qty;
+      const tax = Math.round(subtotal * 0.10);
+      const total = subtotal + tax;
+      elHargaSatuan.textContent = formatRupiah(harga);
+      elPajak.textContent = formatRupiah(tax);
+      elTotal.textContent = formatRupiah(total);
+      return { harga, qty, tax, total };
+    }
+    elJenis.addEventListener('change', hitung);
+    elJumlah.addEventListener('input', hitung);
+    hitung();
+
+    document.getElementById('formTiket').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const nama = document.getElementById('nama').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const tanggal = document.getElementById('tanggal').value;
+      if(!nama || !email || !tanggal) { alert('Mohon lengkapi semua data.'); return; }
+
+      const ringkas = hitung();
+      const orderId = 'ZOO-' + Date.now().toString(36).toUpperCase();
+      const data = {
+        orderId,
+        nama, email, tanggal,
+        jenis: elJenis.value,
+        hargaSatuan: ringkas.harga,
+        jumlah: ringkas.qty,
+        pajak: ringkas.tax,
+        total: ringkas.total,
+        status: 'PENDING',
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem('pendingOrder', JSON.stringify(data));
+      window.location.href = 'pembayaran.html';
+    });
+  </script>
+</body>
+</html>

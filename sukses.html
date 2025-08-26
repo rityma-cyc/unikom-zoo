@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sukses – E-Ticket Kebun Binatang Unikom</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .container{max-width:900px;margin:40px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);text-align:center}
+    .badge{display:inline-block;background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9;padding:6px 10px;border-radius:999px;font-weight:700}
+    .ticket{display:grid;gap:16px;grid-template-columns:1fr 1fr;align-items:center;margin-top:22px}
+    .card{background:#f7fbf9;border:1px solid #e3efe9;border-radius:14px;padding:16px;text-align:left}
+    .btn{background:#2f6f52;color:#fff;border:none;padding:14px 18px;border-radius:12px;font-weight:700;cursor:pointer}
+    @media (max-width:700px){ .ticket{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Pembayaran Berhasil</div>
+    <h1>E-Ticket</h1>
+    <p>Terima kasih! Tunjukkan QR/Kode booking saat masuk.</p>
+
+    <div class="ticket">
+      <div class="card">
+        <h3>Detail Pesanan</h3>
+        <div id="detail"></div>
+      </div>
+      <div class="card" style="text-align:center">
+        <h3>Kode & QR</h3>
+        <div style="font-size:24px;font-weight:800" id="kode"></div>
+        <img id="qr" alt="QR" style="width:220px;height:220px;border-radius:12px;border:1px solid #e0e0e0;margin-top:8px"/>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <button class="btn" onclick="window.print()">Cetak / Simpan PDF</button>
+      <a class="btn" href="index.html" style="text-decoration:none;margin-left:8px;background:#345e4b">Kembali ke Beranda</a>
+    </div>
+  </div>
+
+  <script>
+    const fmt = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+    const order = JSON.parse(localStorage.getItem('lastOrder') || 'null');
+    if(!order){ alert('Tidak ada data tiket. Silakan pesan tiket terlebih dahulu.'); location.href='tiket.html'; }
+
+    document.getElementById('detail').innerHTML =
+      `<div>Order ID: <b>${order.orderId}</b></div>
+       <div>Nama: <b>${order.nama}</b></div>
+       <div>Email: <b>${order.email}</b></div>
+       <div>Tanggal Kunjungan: <b>${order.tanggal}</b></div>
+       <div>Metode: <b>${order.metode?.toUpperCase() || '-'}</b></div>
+       <div>Jenis/Jumlah: <b>${order.jenis}</b> × <b>${order.jumlah}</b></div>
+       <div>Total: <b>${fmt(order.total)}</b></div>`;
+
+    document.getElementById('kode').textContent = order.orderId;
+    const qrData = encodeURIComponent(`BOOK:${order.orderId}|NAMA:${order.nama}|TGL:${order.tanggal}`);
+    document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${qrData}`;
+  </script>
+</body>
+</html>
