@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pembayaran Tiket – Kebun Binatang Unikom</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .container{max-width:900px;margin:40px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    .row{display:grid;gap:20px;grid-template-columns:2fr 1fr}
+    .card{background:#f7fbf9;border:1px solid #e3efe9;border-radius:14px;padding:16px}
+    .btn{background:#2f6f52;color:#fff;border:none;padding:14px 18px;border-radius:12px;font-weight:700;cursor:pointer;width:100%}
+    .muted{color:#607d8b}
+    .methods label{display:block;border:1px solid #cfd8dc;border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer}
+    .methods input{margin-right:8px}
+    .va, .qris, .ewallet{display:none}
+    .total{font-size:24px;font-weight:800}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pembayaran</h1>
+    <div id="wrap" class="row">
+      <div class="card">
+        <h3>Ringkasan Pesanan</h3>
+        <div id="summary"></div>
+        <hr/>
+        <div class="total">Total Bayar: <span id="total"></span></div>
+      </div>
+
+      <div class="card">
+        <h3>Metode Pembayaran (Dummy)</h3>
+        <div class="methods">
+          <label><input type="radio" name="metode" value="qris" checked> QRIS</label>
+          <label><input type="radio" name="metode" value="va"> Transfer VA</label>
+          <label><input type="radio" name="metode" value="ewallet"> E-Wallet</label>
+        </div>
+
+        <!-- tampilan instruksi dummy -->
+        <div class="qris">
+          <p class="muted">Scan QR ini di aplikasi pembayaran kamu (dummy):</p>
+          <img id="imgQris" alt="QRIS" style="width:220px;height:220px;border-radius:12px;border:1px solid #e0e0e0"/>
+        </div>
+
+        <div class="va">
+          <p class="muted">Transfer ke Virtual Account (dummy):</p>
+          <ul>
+            <li>Bank BNI – VA: <b id="vaBni"></b></li>
+            <li>Bank BRI – VA: <b id="vaBri"></b></li>
+          </ul>
+        </div>
+
+        <div class="ewallet">
+          <p class="muted">Bayar via e-wallet (dummy):</p>
+          <ul>
+            <li>GoPay: <b id="ewGopay"></b></li>
+            <li>OVO: <b id="ewOvo"></b></li>
+          </ul>
+        </div>
+
+        <button id="btnPaid" class="btn">Saya sudah bayar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fmt = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+    const order = JSON.parse(localStorage.getItem('pendingOrder') || 'null');
+    if(!order){ alert('Tidak ada pesanan yang menunggu. Mulai dari halaman tiket.'); location.href='tiket.html'; }
+
+    // ringkasan
+    document.getElementById('summary').innerHTML =
+      `<div>Order ID: <b>${order.orderId}</b></div>
+       <div>Nama: <b>${order.nama}</b></div>
+       <div>Email: <b>${order.email}</b></div>
+       <div>Tanggal: <b>${order.tanggal}</b></div>
+       <div>Jenis/Jumlah: <b>${order.jenis}</b> × <b>${order.jumlah}</b></div>`;
+    document.getElementById('total').textContent = fmt(order.total);
+
+    // metode & instruksi dummy
+    const qrisBox = document.querySelector('.qris');
+    const vaBox = document.querySelector('.va');
+    const ewBox = document.querySelector('.ewallet');
+
+    function show(which){
+      qrisBox.style.display = which==='qris'?'block':'none';
+      vaBox.style.display = which==='va'?'block':'none';
+      ewBox.style.display = which==='ewallet'?'block':'none';
+    }
+    document.querySelectorAll('input[name="metode"]').forEach(r=>{
+      r.addEventListener('change', e=>show(e.target.value));
+    });
+    show('qris');
+
+    // QR dummy pakai layanan free (untuk demo)
+    const qrData = encodeURIComponent(`ORDER:${order.orderId}|NAMA:${order.nama}|TOTAL:${order.total}`);
+    document.getElementById('imgQris').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${qrData}`;
+
+    // nomor dummy
+    const randNum = (len)=>Array.from({length:len},()=>Math.floor(Math.random()*10)).join('');
+    document.getElementById('vaBni').textContent = '8808' + randNum(10);
+    document.getElementById('vaBri').textContent = '7777' + randNum(10);
+    document.getElementById('ewGopay').textContent = '08' + randNum(10);
+    document.getElementById('ewOvo').textContent = '08' + randNum(10);
+
+    // tombol "saya sudah bayar"
+    document.getElementById('btnPaid').addEventListener('click', ()=>{
+      const chosen = document.querySelector('input[name="metode"]:checked').value;
+      const paid = { ...order, status:'PAID', paidAt:new Date().toISOString(), metode:chosen };
+      localStorage.removeItem('pendingOrder');
+      localStorage.setItem('lastOrder', JSON.stringify(paid));
+      location.href = 'sukses.html';
+    });
+  </script>
+</body>
+</html>
